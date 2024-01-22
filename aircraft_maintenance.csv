@@ -1,0 +1,4 @@
+_id,index,timestamp,aircraft_name,age,previous_hash,nonce,hash,changed_components[0],changed_components[1],component_repair_history[0],accidental_records[0]
+65a0a39f2050e7c1993e17c1,1,2024-01-12 07:57:43.288853,Genesis Aircraft,0,0,0,4b0cd7269bd0bbf7d49d77fdb2498c78b770a608f595295c640b830095ccb540,,,,
+65a0a3e507a0960de80763c7,2,2024-01-12 07:58:52.579608,Boeing,2,4b0cd7269bd0bbf7d49d77fdb2498c78b770a608f595295c640b830095ccb540,164362,00007384afabb19fe6b062c4cb7d2cef1f0e2eeb6287bc3cea66e876b60a5cc2,Wheels, Turbines,Wheels on Dec23,NA
+65a0a41507a0960de80763c8,2,2024-01-12 07:59:40.519653,Melodi,2,4b0cd7269bd0bbf7d49d77fdb2498c78b770a608f595295c640b830095ccb540,129875,0000d5811e8797a66c26e1d282a7bed47208a0c40f8eabe6ad451651da0782ca,Lakshadweep,,Maldives,Maldives MP's terminated

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aircraft Maintenance Blockchain</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>      
+body {
+            font-family: 'Nunito', sans-serif; /* Updated font for better readability */
+            background: linear-gradient(to right, #3494E6, #EC6EAD);
+        }
+
+        header, h1, h2 {
+            text-align: center;
+            color: white;
+        }
+
+        form {
+            margin-top: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Added shadow */
+        }
+
+        label, input, textarea, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        section {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .block {
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            background-color: #f5f5f5; /* Light gray background */
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .block-header p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .block-header i {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+/* Optionally add a hover animation */
+        .block:hover {
+            border-color: #ccc;
+            background-color: #f7f7f7;
+            }
+
+
+        .block-info {
+            margin-bottom: 15px;
+        }
+
+        .block-info p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .block-info label {
+            font-weight: bold;
+        }
+
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
+
+        .loader span {
+            font-size: 20px;
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bg-primary text-white py-1">
+    <h1>Aircraft Maintenance Blockchain</h1>
+            <i class="fas fa-plane-departure fa-4x mx-auto mb-9"></i> </header>
+    
+        <form id="maintenanceForm">
+            <label for="aircraftName">Aircraft Name:</label>
+        <input type="text" id="aircraftName" name="aircraftName" class="form-control" required>
+
+        <label for="age">Aircraft Age:</label>
+        <input type="number" id="age" name="age" class="form-control" required>
+
+        <label for="changedComponents">Changed Components (comma-separated):</label>
+        <textarea id="changedComponents" name="changedComponents" class="form-control" rows="4" required></textarea>
+
+        <label for="componentRepairHistory">Component Repair History (comma-separated):</label>
+        <textarea id="componentRepairHistory" name="componentRepairHistory" class="form-control" rows="4" required></textarea>
+
+        <label for="accidentalRecords">Accidental Records (comma-separated):</label>
+        <textarea id="accidentalRecords" name="accidentalRecords" class="form-control" rows="4" required></textarea>
+
+        <button type="button" onclick="addMaintenanceBlock()" class="btn btn-success">Add Maintenance Block</button>
+    </form>
+
+    <section id="blocksSection">
+        <h2 class="mt-4">Aircraft Maintenance Blocks</h2>
+        <div id="blocksContainer"></div>
+    </section>
+
+    <script>
+        function addMaintenanceBlock() {
+            var formData = new FormData(document.getElementById("maintenanceForm"));
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://127.0.0.1:5000/add_maintenance", true);
+
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && response.status === 'success') {
+                    alert("Maintenance Block added successfully!");
+                    fetchBlocks();
+                } else {
+                    alert("Error: " + response.message);
+                }
+            };
+
+            xhr.send(formData);
+        }
+
+        function fetchBlocks() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://127.0.0.1:5000/get_blocks", true);
+
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) {
+                    displayBlocks(response.blocks);
+                } else {
+                    alert("Error fetching blocks: " + response.message);
+                }
+            };
+
+            xhr.send();
+        }
+
+        function displayBlocks(blocks) {
+            var blocksContainer = document.getElementById("blocksContainer");
+            blocksContainer.innerHTML = "";
+
+            blocks.forEach(function (block) {
+                var blockDiv = document.createElement("div");
+                blockDiv.className = "block";
+
+                blockDiv.innerHTML = `
+                    <p>Block #${block.index}</p>
+                    <p>Timestamp: ${block.timestamp}</p>
+                    <p>Aircraft Name: ${block.aircraft_name}</p>
+                    <p>Aircraft Age: ${block.age}</p>
+                    <p>Changed Components: ${block.changed_components.join(', ')}</p>
+                    <p>Component Repair History: ${block.component_repair_history.join(', ')}</p>
+                    <p>Accidental Records: ${block.accidental_records.join(', ')}</p>
+                    <p>Hash: ${block.hash}</p>
+                    <p>Previous Hash: ${block.previous_hash}</p>
+                `;
+
+                blocksContainer.appendChild(blockDiv);
+            });
+        }
+
+        // Fetch blocks when the page loads
+        window.onload = function () {
+            fetchBlocks();
+        };
+    </script>
+
+</body>
+</html>

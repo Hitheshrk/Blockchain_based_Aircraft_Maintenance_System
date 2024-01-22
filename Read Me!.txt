@@ -1,0 +1,12 @@
+Read Me!
+install the required libraries like pip install crypto,Pymongo for python
+install the required modules like npm install express
+
+UP the server by runnuing 
+
+python app.py
+python app.py
+
+node server.js
+
+Now you should be able to run the project and you can add and retrive the data from the blockchain!

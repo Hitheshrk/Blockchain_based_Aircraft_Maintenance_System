@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="style.css">
+
+	<title style="font-family: 'Serif', sans-serif; font-size: 24px; font-weight: bold; color: blue; text-align: center; margin-top: 20px;">
+        Aircraft Maintenance Dashboard
+    </title>
+    
+</head>
+<body>
+
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-smile'></i>
+			<span class="text">AIRMED</span>
+		</a>
+		<ul class="side-menu top">
+			<li class="active">
+				<a href="#">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="templates\index.html">
+					<i class='bx bxs-shopping-bag-alt' ></i>
+					<span class="text">Aircraft Details</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-doughnut-chart' ></i>
+					<span class="text">Purchase Orders</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-message-dots' ></i>
+					<span class="text">Maintainence Log</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Team</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<li>
+				<a href="#">
+					<i class='bx bxs-cog' ></i>
+					<span class="text">Settings</span>
+				</a>
+			</li>
+			<li>
+				<a href="#" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu' ></i>
+			<a href="#" class="nav-link">Categories</a>
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="#" class="profile">
+				<img src="people.png">
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+    
+    
+    <section id="blocksSection">
+        <h2>Aircraft Maintenance Blocks</h2>
+        <div id="blocksContainer"></div>
+    </section>
+
+    <script>
+        function addMaintenanceBlock() {
+            var formData = new FormData(document.getElementById("maintenanceForm"));
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://127.0.0.1:5000/add_maintenance", true);
+
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && response.status === 'success') {
+                    alert("Maintenance Block added successfully!");
+                    fetchBlocks();
+                } else {
+                    alert("Error: " + response.message);
+                }
+            };
+
+            xhr.send(formData);
+        }
+
+        function fetchBlocks() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://127.0.0.1:5000/get_blocks", true);
+
+            xhr.onload = function () {
+                var response = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) {
+                    displayBlocks(response.blocks);
+                } else {
+                    alert("Error fetching blocks: " + response.message);
+                }
+            };
+
+            xhr.send();
+        }
+
+        function displayBlocks(blocks) {
+            var blocksContainer = document.getElementById("blocksContainer");
+            blocksContainer.innerHTML = "";
+
+            blocks.forEach(function (block) {
+                var blockDiv = document.createElement("div");
+                blockDiv.className = "block";
+
+                blockDiv.innerHTML = `
+                    <p>Block #${block.index}</p>
+                    <p>Timestamp: ${block.timestamp}</p>
+                    <p>Aircraft Name: ${block.aircraft_name}</p>
+                    <p>Aircraft Age: ${block.age}</p>
+                    <p>Changed Components: ${block.changed_components.join(', ')}</p>
+                    <p>Component Repair History: ${block.component_repair_history.join(', ')}</p>
+                    <p>Accidental Records: ${block.accidental_records.join(', ')}</p>
+                    <p>Hash: ${block.hash}</p>
+                    <p>Previous Hash: ${block.previous_hash}</p>
+                `;
+
+                blocksContainer.appendChild(blockDiv);
+            });
+        }
+
+        // Fetch blocks when the page loads
+        window.onload = function () {
+            fetchBlocks();
+        };
+    </script>
+
+</body>
+</html>
